@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="snowflake-source" content="cortex-agent-authored">
+<title>SoFi Finance AI Champions — Level 200 Hands-On Guide</title>
+<script type="application/json" id="snowflake-report-metadata">
+{
+  "generated": "2026-09-09",
+  "intent": "Styled participant guide for the SoFi Finance AI Champions Level 200 workshop (Document Intelligence & AI Functions)",
+  "sections": [
+    { "id": "overview", "title": "What This Workshop Builds" },
+    { "id": "architecture", "title": "Solution Architecture" },
+    { "id": "objects", "title": "What's Already In Your Account" },
+    { "id": "why", "title": "Step 1 — Why AI Functions" },
+    { "id": "extract", "title": "Step 2 — AI_EXTRACT" },
+    { "id": "classify", "title": "Step 3 — AI_CLASSIFY" },
+    { "id": "compliance", "title": "Step 4 — AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT" },
+    { "id": "transcribe", "title": "Step 5 — AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG" },
+    { "id": "complete", "title": "Step 6 — Capstone: AI_COMPLETE" },
+    { "id": "next-steps", "title": "Recap & What's Next" }
+  ]
+}
+</script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root { color-scheme: light dark; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: light-dark(#16222c, #dbe6ee);
+    background: light-dark(hsl(201, 25%, 97%), hsl(205, 30%, 9%));
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(90deg, #00A2C7 0%, #3FBBDA 42%, #DFF4FA 78%, #ffffff 100%);
+    color: white; padding: 22px 40px 20px; position: relative; overflow: hidden;
+}
+.header::before {
+    content: ''; position: absolute; top: -50%; right: 18%; width: 460px; height: 460px;
+    background: radial-gradient(circle, rgba(255,255,255,0.20) 0%, transparent 70%); border-radius: 50%;
+}
+.header::after {
+    content: ''; position: absolute; bottom: -30%; left: -5%; width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%); border-radius: 50%;
+}
+.header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; position: relative; letter-spacing: -0.01em; }
+.header .subtitle { font-size: 15px; color: #eafcff; margin-bottom: 6px; position: relative; }
+.header .project-label { font-size: 13px; color: hsl(195, 60%, 92%); margin-bottom: 12px; position: relative; }
+.header .chips { display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
+.header .chip { background: #00A2C7; padding: 4px 12px; border-radius: 6px; font-size: 13px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.25); }
+
+/* Nav */
+.nav-bar {
+    background: light-dark(#fff, #101b26); border-bottom: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,20%));
+    padding: 0 44px; position: sticky; top: 0; z-index: 100;
+    display: flex; gap: 0; overflow-x: auto;
+}
+.nav-bar a {
+    text-decoration: none; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); font-size: 13.5px; font-weight: 500;
+    padding: 12px 16px; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.2s;
+}
+.nav-bar a:hover { color: light-dark(#0A1F33, #dbe6ee); }
+.nav-bar a.active { color: #0E6BA8; border-bottom-color: #29B5E8; }
+
+/* Content */
+.content { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px,4vw,32px) 48px; }
+.section { margin-bottom: 52px; scroll-margin-top: 58px; }
+.section h2 { font-size: 24px; font-weight: 700; color: light-dark(#0A1F33, #eaf3f8); border-bottom: 3px solid #29B5E8; padding-bottom: 8px; margin-bottom: 20px; letter-spacing: -0.01em; }
+.section h3 { font-size: 19px; font-weight: 600; color: light-dark(hsl(201,15%,15%), hsl(201,15%,88%)); margin: 24px 0 10px; }
+.section p { font-size: 16px; color: light-dark(hsl(201,15%,40%), hsl(201,15%,68%)); margin-bottom: 14px; max-width: 900px; }
+
+/* Metrics */
+.metrics-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+.metric-card { background: light-dark(#fff, #16222c); border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); border-radius: 10px; padding: 18px 22px; flex: 1; min-width: 170px; }
+.metric-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); margin-bottom: 2px; font-weight: 600; }
+.metric-value { font-size: 26px; font-weight: 800; color: light-dark(#0A1F33, #eaf3f8); }
+.metric-sub { font-size: 13px; color: light-dark(hsl(201,15%,57%), hsl(201,15%,58%)); margin-top: 2px; }
+
+/* Architecture diagram */
+.diagram { background: light-dark(#fff, #101b26); border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); border-radius: 10px; padding: 26px 20px; overflow-x: auto; }
+.diagram-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; min-width: 780px; justify-content: center; }
+.diagram-node { border-radius: 8px; padding: 12px 16px; font-size: 13px; font-weight: 600; text-align: center; min-width: 140px; border: 2px solid; }
+.diagram-node small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 3px; opacity: .85; }
+.dn-source { background: hsl(202,60%,94%); border-color: #29B5E8; color: #0A1F33; }
+.dn-foundation { background: #eafbf1; border-color: #2fa86a; color: #14532d; }
+.dn-semantic { background: #f2eefe; border-color: #7A5CFA; color: #3d2a8f; }
+.dn-consume { background: #fef4e6; border-color: #e8912a; color: #7a4a10; }
+.diagram-arrow { font-size: 20px; color: light-dark(hsl(201,15%,55%), hsl(201,15%,55%)); flex-shrink: 0; }
+.diagram-caption { font-size: 14px; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); margin-top: 12px; text-align: center; }
+
+/* Notes */
+.note, .note-green, .note-amber { padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 15px; margin-bottom: 20px; }
+.note { background: light-dark(hsl(202,45%,95%), hsl(205,40%,14%)); border-left: 4px solid #29B5E8; color: light-dark(#0E4E68, #bfe6f6); }
+.note-green { background: light-dark(#f0fdf4, hsl(150,35%,12%)); border-left: 4px solid #22c55e; color: light-dark(#166534, #a9e6c3); }
+.note-amber { background: light-dark(#fef4e6, hsl(30,45%,12%)); border-left: 4px solid #e8912a; color: light-dark(#7a4a10, #f0c98a); }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 15px; }
+th { background: light-dark(hsl(201,20%,93%), hsl(205,20%,16%)); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 2px solid light-dark(hsl(201,20%,88%), hsl(205,20%,24%)); }
+td { padding: 9px 14px; border-bottom: 1px solid light-dark(hsl(201,20%,93%), hsl(205,20%,18%)); }
+tr:hover td { background: light-dark(hsl(201,20%,97%), hsl(205,20%,14%)); }
+tr.sub-row td:first-child { padding-left: 30px; font-weight: 400; }
+
+/* Stop cards */
+.stop { border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); border-radius: 10px; padding: 22px 26px; margin: 18px 0; background: light-dark(#fff, #16222c); }
+.stop-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.stop-num { background: #29B5E8; color: #04202b; font-weight: 700; font-size: 14px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stop-title { font-size: 17px; font-weight: 600; color: light-dark(#0A1F33, #eaf3f8); }
+.stop-tag { font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.tag-coco { background: hsl(202,45%,92%); color: #0E6BA8; }
+.tag-setup { background: #eafbf1; color: #15803d; }
+.tag-ai { background: #f2eefe; color: #3d2a8f; }
+
+/* Code blocks */
+.code-label { margin-top: 14px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.8px; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); font-weight: 700; }
+.code-block { background: #0A1F33; color: hsl(201,25%,88%); padding: 14px 18px; border-radius: 8px; margin-top: 6px; font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace; font-size: 13px; line-height: 1.7; overflow-x: auto; white-space: pre; }
+
+/* Footer */
+.footer { text-align: center; padding: 24px; font-size: 14px; color: light-dark(hsl(201,15%,57%), hsl(201,15%,55%)); border-top: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); margin-top: 40px; }
+
+img, svg { max-width: 100%; height: auto; }
+
+@media print {
+    .nav-bar { display: none; }
+    .section { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Level 200 &mdash; Hands-On Guide</h1>
+    <div class="subtitle">SoFi Finance AI Champions Workshop &mdash; Document Intelligence &amp; AI Functions</div>
+    <div class="project-label">Snowflake Solutions Engineering &mdash; Hands-On Session Playbook</div>
+    <div class="chips">
+        <span class="chip"><strong>Program:</strong> SoFi Finance AI Champions</span>
+        <span class="chip"><strong>Facilitator:</strong> Arnold Yeung, Snowflake SE</span>
+        <span class="chip"><strong>Tools:</strong> 9 Cortex AI Functions</span>
+    </div>
+</div>
+
+<div class="nav-bar" id="navbar">
+    <a href="#overview">Overview</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#objects">What's In Your Account</a>
+    <a href="#why">Why AI Functions</a>
+    <a href="#extract">AI_EXTRACT</a>
+    <a href="#classify">AI_CLASSIFY</a>
+    <a href="#compliance">Compliance</a>
+    <a href="#transcribe">Transcribe &amp; Sentiment</a>
+    <a href="#complete">AI_COMPLETE</a>
+    <a href="#next-steps">Recap &amp; Next Steps</a>
+</div>
+
+<div class="content">
+
+<div class="section" id="overview">
+    <h2>What This Workshop Builds</h2>
+    <p>Level 100 showed you what a well-configured AI stack feels like as a <strong>consumer</strong>. Today you become the <strong>builder</strong>: you'll use 9 Cortex AI Functions to turn real, unstructured documents &mdash; an official earnings transcript, a real SEC-filed legal contract, a real earnings call audio clip, and sample invoices &mdash; into structured, governed Snowflake tables.</p>
+    <p>Unlike Level 100, your environment was <strong>pre-built by your facilitator</strong> before the session, since today's data includes binary PDF and audio files that need to already exist in your account. You'll spend the session running AI function SQL directly against real documents &mdash; this session is <strong>interleaved</strong>: a short slide per function, then you try it live, then the next slide. Building a Semantic View and a Cortex Agent over these tables is <strong>Level 300</strong> content, not today.</p>
+
+    <div class="metrics-row">
+        <div class="metric-card"><div class="metric-label">AI Functions</div><div class="metric-value">9</div><div class="metric-sub">AI_EXTRACT, AI_CLASSIFY, AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT, AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG, AI_COMPLETE</div></div>
+        <div class="metric-card"><div class="metric-label">Documents</div><div class="metric-value">6 Real Files</div><div class="metric-sub">2 invoices, 1 contract, 2 earnings transcripts, 1 audio clip</div></div>
+        <div class="metric-card"><div class="metric-label">Setup</div><div class="metric-value">Pre-built</div><div class="metric-sub">Facilitator-provisioned before the session</div></div>
+        <div class="metric-card"><div class="metric-label">Infrastructure</div><div class="metric-value">Zero-external</div><div class="metric-sub">100% Snowflake &mdash; no data leaves the platform</div></div>
+    </div>
+
+    <div class="note">
+        <strong>Prerequisites:</strong> A Snowflake trial account (same login as Level 100, or a new one), Chrome or Edge, and no prior SQL or coding experience required &mdash; the AI functions do the heavy lifting.
+    </div>
+</div>
+
+<div class="section" id="architecture">
+    <h2>Solution Architecture</h2>
+    <p>Your facilitator pre-loaded 6 real documents into an internal stage. Each AI function reads directly from that stage and writes its output into a Snowflake table &mdash; building a Semantic View on top of those tables is Level 300 content, not today.</p>
+
+    <div class="diagram">
+        <div class="diagram-row">
+            <div class="diagram-node dn-source">Document Stage<small>DOC_AI_SAMPLES<br>6 real PDFs + 1 audio file</small></div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-node dn-foundation">9 AI Functions<small>Extract, Classify, Parse,<br>Filter, Redact, Transcribe,<br>Sentiment, Summarize, Complete</small></div>
+            <div class="diagram-arrow">&rarr;</div>
+            <div class="diagram-node dn-semantic">8 Extraction Tables<small>Ready for Level 300's<br>Semantic View + Agent</small></div>
+        </div>
+        <div class="diagram-caption">Every table was empty at the start of this workshop &mdash; you built the pipeline that filled them.</div>
+    </div>
+</div>
+
+<div class="section" id="objects">
+    <h2>What's Already In Your Account</h2>
+    <p>Your facilitator ran a provisioning script in your account before the session, using Snowflake's DataOps Live pipeline. Here's what's already there:</p>
+    <div class="table-wrap">
+        <table>
+            <tr><th>Object</th><th>Name / Count</th><th>What It Is</th></tr>
+            <tr><td><strong>Role</strong></td><td><code>FINANCE_HOL_ADMIN</code></td><td>Your permissions for the workshop (same role as Level 100)</td></tr>
+            <tr><td><strong>Warehouse</strong></td><td><code>FINANCE_HOL_WH</code></td><td>Compute engine for your queries (auto-suspends when idle)</td></tr>
+            <tr><td><strong>Database</strong></td><td><code>SOFI_FINANCE_L200</code></td><td>Standalone database for this session &mdash; no dependency on Level 100's data</td></tr>
+            <tr class="sub-row"><td>Schema</td><td><code>DOCUMENTS</code></td><td>Holds the stage and all extraction tables</td></tr>
+            <tr class="sub-row"><td>Stage</td><td><code>DOC_AI_SAMPLES</code></td><td>6 real documents: SoFi earnings transcript, Robinhood earnings excerpt, Robinhood earnings call audio, SEC-filed SoFi contract, and 2 vendor invoices</td></tr>
+            <tr class="sub-row"><td>Tables</td><td>8</td><td>AI-generated extraction tables you'll build from and query today</td></tr>
+            <tr><td><strong>Workspace</strong></td><td><code>SoFi_L200</code></td><td>Your Snowsight workspace for today</td></tr>
+        </table>
+    </div>
+    <div class="note">
+        <strong>No Semantic View or Cortex Agent today:</strong> building those is <strong>Level 300</strong> content, on top of the 8 tables above.
+    </div>
+    <div class="note-amber">
+        <strong>Real, not synthetic:</strong> the earnings transcripts, the audio clip, and the legal contract are all genuine public documents &mdash; not mock data. See the workshop's <code>ASSETS_README.md</code> for full provenance if you're curious.
+    </div>
+    <ol>
+        <li>Log in to Snowsight at the URL from your welcome email</li>
+        <li>In the left sidebar, click <strong>Projects &rarr; Workspaces</strong>, and open <strong>SoFi_L200</strong></li>
+        <li>Click your <strong>user avatar</strong> in the bottom-left corner, and under <strong>Switch Role</strong>, select <strong>FINANCE_HOL_ADMIN</strong></li>
+    </ol>
+</div>
+
+<div class="section" id="why">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">1</span><span class="stop-title">Why AI Functions</span><span class="stop-tag tag-setup">Context</span></div>
+        <p>Level 100 showed CoCo and CoWork answering questions over <strong>structured</strong> tables, grounded by a Semantic View and a <strong>Cortex Agent</strong>. Today's data &mdash; invoices, transcripts, a contract, an audio file &mdash; isn't structured at all. Cortex AI Functions run directly inside Snowflake on files sitting in a stage, so you can turn any document or recording into a queryable table without a separate ML pipeline or sending data outside your account.</p>
+        <p>This session is <strong>interleaved</strong>: a short slide explaining each function, then you try it live, then the next slide &mdash; nine functions total.</p>
+        <p>Take a look at the stage before you start:</p>
+        <div class="code-label">Try it</div>
+        <div class="code-block">SELECT relative_path, size, last_modified
+FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
+        <p style="margin-top:14px;">You should see all 6 files: 2 invoices, 1 contract, 2 earnings transcript PDFs, and 1 audio clip.</p>
+    </div>
+</div>
+
+<div class="section" id="extract">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">2</span><span class="stop-title">Module 1: AI_EXTRACT</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <p><strong>AI_EXTRACT</strong> pulls fields out of a document &mdash; either as a simple question/answer map, or a full JSON schema with repeating line items.</p>
+        <div class="code-label">Question-map form &mdash; single invoice</div>
+        <div class="code-block">SELECT AI_EXTRACT(
+  file => TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'invoice_nexgen_office_solutions.pdf'),
+  responseFormat => {
+    'vendor_name': 'Who is the vendor on this invoice?',
+    'invoice_number': 'What is the invoice number?',
+    'total_amount': 'What is the total amount due?'
+  }
+) AS extracted_fields;</div>
+        <div class="code-label">Full JSON schema with repeating line items &mdash; second invoice</div>
+        <div class="code-block">SELECT AI_EXTRACT(
+  file => TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'invoice_cloudguard_security.pdf'),
+  responseFormat => {
+    'type': 'json',
+    'schema': {
+      'vendor_name': 'STRING',
+      'invoice_number': 'STRING',
+      'invoice_date': 'STRING',
+      'total_amount': 'STRING',
+      'line_items': [{'description': 'STRING', 'quantity': 'STRING', 'amount': 'STRING'}]
+    }
+  }
+) AS extracted;</div>
+        <p style="margin-top:14px;">Both invoices were already extracted into <code>documents.invoice_extracts</code> when your account was provisioned:</p>
+        <div class="code-block">SELECT * FROM sofi_finance_l200.documents.invoice_extracts;</div>
+        <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> This is exactly how Procurement matches PO line items against the 6,162 Coupa/Ironclad approvals over $100K &mdash; one AI_EXTRACT call per invoice instead of manual data entry.</div>
+    </div>
+</div>
+
+<div class="section" id="classify">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">3</span><span class="stop-title">Module 2: AI_CLASSIFY</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <p><strong>AI_CLASSIFY</strong> labels a document against categories you define &mdash; no training data or model required.</p>
+        <div class="code-label">Try it</div>
+        <div class="code-block">SELECT
+  relative_path,
+  AI_CLASSIFY(
+    TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', relative_path),
+    ['invoice', 'earnings call transcript', 'legal contract']
+  ):labels[0]::STRING AS predicted_doc_type
+FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples)
+WHERE relative_path ILIKE '%.pdf';</div>
+        <p style="margin-top:14px;">Compare your live results against the pre-built table:</p>
+        <div class="code-block">SELECT * FROM sofi_finance_l200.documents.document_classification;</div>
+        <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> An inbound document stage could auto-route every new file to the correct downstream pipeline (AP, Legal, IR) the moment it lands &mdash; no manual triage.</div>
+    </div>
+</div>
+
+<div class="section" id="compliance">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">4</span><span class="stop-title">Module 3: AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <p><strong>AI_PARSE_DOCUMENT</strong> converts a PDF into clean text &mdash; required before AI_FILTER, AI_REDACT, or AI_SUMMARIZE_AGG, since those only accept text, not files.</p>
+        <div class="code-label">Parse the contract</div>
+        <div class="code-block">SELECT AI_PARSE_DOCUMENT(
+  TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'sofi_capped_call_contract.pdf'),
+  {'mode': 'OCR'}
+):content::STRING AS parsed_text;</div>
+        <p style="margin-top:14px;">This is a <strong>real, SEC-filed legal contract</strong> &mdash; SoFi's Capped Call Early Unwind Agreement, filed as an 8-K exhibit.</p>
+        <div class="code-label">AI_FILTER &mdash; a yes/no question usable in a WHERE clause</div>
+        <div class="code-block">SELECT source_file
+FROM sofi_finance_l200.documents.contract_parsed
+WHERE AI_FILTER(
+  'Does this legal contract text contain a specific counterparty name or signatory that should be reviewed for confidentiality before external sharing? ' || SUBSTR(parsed_text, 1, 4000)
+);</div>
+        <div class="code-label">AI_REDACT &mdash; masks sensitive spans using built-in default categories</div>
+        <div class="code-block">SELECT AI_REDACT(SUBSTR(parsed_text, 1, 4000)) AS redacted_excerpt
+FROM sofi_finance_l200.documents.contract_parsed;</div>
+        <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> Internal Audit runs this exact pattern across every SOX-relevant contract for continuous compliance monitoring &mdash; flag-first, review-second, instead of manual document review.</div>
+    </div>
+</div>
+
+<div class="section" id="transcribe">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">5</span><span class="stop-title">Module 4: AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <p><strong>AI_TRANSCRIBE</strong> converts audio directly into text &mdash; no separate transcription service.</p>
+        <div class="code-label">Try it &mdash; a real 6-minute clip from Robinhood's Q2 2026 earnings call</div>
+        <div class="code-block">SELECT
+  AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):text::STRING AS transcript,
+  AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):audio_duration::FLOAT AS duration_seconds;</div>
+        <div class="code-label">AI_SENTIMENT &mdash; scores text for sentiment</div>
+        <div class="code-block">SELECT source_file, overall_sentiment
+FROM sofi_finance_l200.documents.transcript_sentiment;</div>
+        <div class="code-label">AI_SUMMARIZE_AGG &mdash; an aggregate function rolling many rows into one narrative</div>
+        <div class="code-block">SELECT AI_SUMMARIZE_AGG(SUBSTR(transcript_text, 1, 4000)) AS portfolio_summary
+FROM sofi_finance_l200.documents.transcript_sentiment;</div>
+        <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> Competitive Strategy tracks sentiment across SoFi's and competitors' earnings calls quarter over quarter, and gets an auto-generated "earnings season" summary for the weekly leadership readout.</div>
+    </div>
+</div>
+
+<div class="section" id="complete">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">6</span><span class="stop-title">Capstone: AI_COMPLETE</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <p>Here's the reveal: this is the <strong>same audio file</strong> you just transcribed, sentiment-scored, and summarized in the previous step &mdash; but now <strong>AI_COMPLETE</strong> reasons directly over the raw audio, in one call, with zero transcription step.</p>
+        <p>Where AI_EXTRACT, AI_CLASSIFY, and AI_TRANSCRIBE are each purpose-built for one task, <strong>AI_COMPLETE</strong> is the flexible, general-purpose function in the Cortex AI family &mdash; it takes a model, a custom prompt, an optional file (audio/image/video), and a structured JSON schema.</p>
+        <div class="code-label">Try it</div>
+        <div class="code-block">SELECT AI_COMPLETE(
+  'gemini-3.1-pro',
+  'Analyze this earnings call audio directly. Return overall tone, sentiment, and up to 3 key topics discussed as JSON. Return ONLY raw JSON, no markdown.',
+  TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3'),
+  {},
+  {
+    'type': 'json',
+    'schema': {
+      'type': 'object',
+      'properties': {
+        'tone': {'type': 'string'},
+        'sentiment': {'type': 'string'},
+        'key_topics': {'type': 'array', 'items': {'type': 'string'}}
+      },
+      'required': ['tone', 'sentiment', 'key_topics']
+    }
+  }
+) AS audio_analysis;</div>
+        <p style="margin-top:14px;">Compare against the pre-built table:</p>
+        <div class="code-block">SELECT * FROM sofi_finance_l200.documents.audio_complete_analysis;</div>
+        <div class="note-green" style="margin-top:14px;"><strong>When to use it:</strong> custom or open-ended reasoning a fixed extraction schema can't capture, or direct multimodal analysis of audio/video/images without a separate transcription or OCR step. <strong>Use case:</strong> Competitive Strategy gets tone and key topics from a competitor earnings call in a single step &mdash; no separate transcription pipeline required.</div>
+    </div>
+</div>
+
+<div class="section" id="next-steps">
+    <h2>Recap &amp; What's Next</h2>
+    <p>Today you moved from <strong>consumer</strong> (Level 100) to <strong>builder</strong>: you used 9 Cortex AI Functions to turn real unstructured documents into structured, governed Snowflake tables. You did <strong>not</strong> build a Semantic View or a Cortex Agent &mdash; that's next.</p>
+    <div class="table-wrap">
+        <table>
+            <tr><th>Level</th><th>Focus</th><th>What You'll Do</th></tr>
+            <tr><td><strong>Level 100</strong></td><td>Platform orientation &amp; Cortex AI as a consumer</td><td>Tour Snowsight and governance, use CoCo and CoWork against a pre-built finance dataset</td></tr>
+            <tr><td><strong>Level 200</strong> (Today)</td><td>Document intelligence &amp; AI Functions</td><td>Use AI_EXTRACT, AI_CLASSIFY, AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT, AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG, and AI_COMPLETE on real documents and audio</td></tr>
+            <tr><td><strong>Level 300</strong></td><td>Semantic View, Cortex Agent, and advanced workflows</td><td>Build a governed Semantic View and a Cortex Agent over the tables from today (or an equivalent facilitator-provisioned copy, if you skipped Level 200)</td></tr>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    Snowflake Solutions Engineering &mdash; SoFi Finance AI Champions Workshop &mdash; Level 200
+</div>
+
+</body>
+</html>
