@@ -24,6 +24,13 @@ into structured, queryable Snowflake tables:
 
 ## Getting Started
 
-**[View the guide online](https://aryeung0.github.io/SoFi_L200/L200_Participant_Guide.html)** (no download needed) — it walks you through all 9 functions, the SQL for each, and what to try hands-on.
+**[View the guide online](https://aryeung0.github.io/SoFi_L200/L200_Participant_Guide.html)** (no download needed) — it walks you through all 9 functions, the SQL for each, and what to try hands-on. Includes a slide reference gallery matching the deck your facilitator presents.
 
 There's no setup script to run yourself for Level 200 — your facilitator has already provisioned your account. Just open the guide and follow along.
+
+## Assets
+
+- `assets/logos/` — SoFi + Snowflake logos (reused from Level 100)
+- `assets/slide_images/` — thumbnails of all 18 slides from the Level 200 deck, used in the guide's Slide Reference gallery
+- `assets/screenshots/` — currently empty (just a `.gitkeep`); Snowsight walkthrough screenshots will be added here later, following Level 100's naming convention (`00_...`, `01_...`, etc.)
+

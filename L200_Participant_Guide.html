@@ -10,6 +10,7 @@
   "generated": "2026-09-09",
   "intent": "Styled participant guide for the SoFi Finance AI Champions Level 200 workshop (Document Intelligence & AI Functions)",
   "sections": [
+    { "id": "slides", "title": "Slide Reference" },
     { "id": "overview", "title": "What This Workshop Builds" },
     { "id": "architecture", "title": "Solution Architecture" },
     { "id": "objects", "title": "What's Already In Your Account" },
@@ -91,6 +92,29 @@ body {
 .diagram-arrow { font-size: 20px; color: light-dark(hsl(201,15%,55%), hsl(201,15%,55%)); flex-shrink: 0; }
 .diagram-caption { font-size: 14px; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); margin-top: 12px; text-align: center; }
 
+/* Brand lockup (top-right) */
+.brand-lockup { position: absolute; top: 18px; right: 32px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; z-index: 2; }
+.brand-lockup img { display: block; border-radius: 5px; box-shadow: 0 1px 4px rgba(10,31,51,0.18); }
+.brand-lockup .logo-sofi { height: 22px; width: auto; }
+.brand-lockup .logo-snowflake { height: 22px; width: auto; }
+@media (max-width: 720px) {
+    .brand-lockup { position: static; align-items: flex-start; margin-top: 14px; }
+}
+
+/* Slide gallery */
+.slide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.slide-card { border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); border-radius: 10px; overflow: hidden; background: light-dark(#fff, #16222c); cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+.slide-card:hover { border-color: #29B5E8; }
+.slide-card.active { border-color: #29B5E8; box-shadow: 0 0 0 2px rgba(41,181,232,0.25); }
+.slide-card img { display: block; width: 100%; }
+.slide-card .cap { font-size: 12px; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); padding: 7px 10px; border-top: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); }
+
+.slide-expand { margin-top: 16px; border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,22%)); border-radius: 10px; background: light-dark(hsl(201,20%,97%), hsl(205,20%,13%)); padding: 20px; text-align: center; position: relative; }
+.slide-expand img { max-width: 630px; width: 100%; border-radius: 8px; border: 1px solid light-dark(hsl(201,20%,88%), hsl(205,20%,26%)); }
+.slide-expand-cap { margin-top: 12px; font-size: 14px; font-weight: 600; color: light-dark(hsl(201,15%,30%), hsl(201,15%,80%)); }
+.slide-expand-close { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 22px; line-height: 1; cursor: pointer; color: light-dark(hsl(201,15%,44%), hsl(201,15%,65%)); padding: 4px 8px; }
+.slide-expand-close:hover { color: light-dark(#0A1F33, #eaf3f8); }
+
 /* Notes */
 .note, .note-green, .note-amber { padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 15px; margin-bottom: 20px; }
 .note { background: light-dark(hsl(202,45%,95%), hsl(205,40%,14%)); border-left: 4px solid #29B5E8; color: light-dark(#0E4E68, #bfe6f6); }
@@ -141,9 +165,14 @@ img, svg { max-width: 100%; height: auto; }
         <span class="chip"><strong>Facilitator:</strong> Arnold Yeung, Snowflake SE</span>
         <span class="chip"><strong>Tools:</strong> 9 Cortex AI Functions</span>
     </div>
+    <div class="brand-lockup">
+        <img class="logo-sofi" src="assets/logos/sofi_logo.png" alt="SoFi logo">
+        <img class="logo-snowflake" src="assets/logos/snowflake_logo.png" alt="Snowflake logo">
+    </div>
 </div>
 
 <div class="nav-bar" id="navbar">
+    <a href="#slides">Slides</a>
     <a href="#overview">Overview</a>
     <a href="#architecture">Architecture</a>
     <a href="#objects">What's In Your Account</a>
@@ -157,6 +186,36 @@ img, svg { max-width: 100%; height: auto; }
 </div>
 
 <div class="content">
+
+<div class="section" id="slides">
+    <h2>Slide Reference</h2>
+    <p>A copy of the slides your facilitator presents during the session, for reference during or after the workshop. Format is interleaved: a short slide per AI function, then hands-on, then the next slide.</p>
+    <div class="slide-grid">
+        <div class="slide-card"><img src="assets/slide_images/slide_01_title.png" alt="Slide 1: Title"><div class="cap">1 &middot; Title</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_02_agenda.png" alt="Slide 2: Agenda"><div class="cap">2 &middot; Agenda</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_03_recap.png" alt="Slide 3: Level 100 Recap"><div class="cap">3 &middot; Level 100 Recap</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_04_why_ai_functions.png" alt="Slide 4: Why AI Functions"><div class="cap">4 &middot; Why AI Functions</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_05_unstructured_data.png" alt="Slide 5: Unstructured Data"><div class="cap">5 &middot; Unstructured Data</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_06_ai_extract.png" alt="Slide 6: AI_EXTRACT"><div class="cap">6 &middot; AI_EXTRACT</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_07_ai_extract_line_items.png" alt="Slide 7: AI_EXTRACT Line Items"><div class="cap">7 &middot; AI_EXTRACT (Line Items)</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_08_ai_classify.png" alt="Slide 8: AI_CLASSIFY"><div class="cap">8 &middot; AI_CLASSIFY</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_09_ai_parse_document.png" alt="Slide 9: AI_PARSE_DOCUMENT"><div class="cap">9 &middot; AI_PARSE_DOCUMENT</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_10_ai_filter.png" alt="Slide 10: AI_FILTER"><div class="cap">10 &middot; AI_FILTER</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_11_ai_redact.png" alt="Slide 11: AI_REDACT"><div class="cap">11 &middot; AI_REDACT</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_12_ai_transcribe.png" alt="Slide 12: AI_TRANSCRIBE"><div class="cap">12 &middot; AI_TRANSCRIBE</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_13_ai_sentiment.png" alt="Slide 13: AI_SENTIMENT"><div class="cap">13 &middot; AI_SENTIMENT</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_14_ai_summarize_agg.png" alt="Slide 14: AI_SUMMARIZE_AGG"><div class="cap">14 &middot; AI_SUMMARIZE_AGG</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_15_ai_complete_capstone.png" alt="Slide 15: Capstone AI_COMPLETE"><div class="cap">15 &middot; Capstone: AI_COMPLETE</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_16_l300_preview.png" alt="Slide 16: Level 300 Preview"><div class="cap">16 &middot; Level 300 Preview</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_17_resources.png" alt="Slide 17: Resources"><div class="cap">17 &middot; Resources</div></div>
+        <div class="slide-card"><img src="assets/slide_images/slide_18_thank_you.png" alt="Slide 18: Thank You"><div class="cap">18 &middot; Thank You</div></div>
+    </div>
+    <div class="slide-expand" id="slideExpand" hidden>
+        <button class="slide-expand-close" id="slideExpandClose" aria-label="Close expanded slide">&times;</button>
+        <img id="slideExpandImg" src="" alt="">
+        <div class="slide-expand-cap" id="slideExpandCap"></div>
+    </div>
+</div>
 
 <div class="section" id="overview">
     <h2>What This Workshop Builds</h2>
@@ -373,6 +432,50 @@ FROM sofi_finance_l200.documents.transcript_sentiment;</div>
 <div class="footer">
     Snowflake Solutions Engineering &mdash; SoFi Finance AI Champions Workshop &mdash; Level 200
 </div>
+
+<script>
+// Slide gallery — click a thumbnail to expand a larger version below the grid
+var slideCards = Array.prototype.slice.call(document.querySelectorAll('.slide-card'));
+var slideExpand = document.getElementById('slideExpand');
+var slideExpandImg = document.getElementById('slideExpandImg');
+var slideExpandCap = document.getElementById('slideExpandCap');
+slideCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+        var img = card.querySelector('img');
+        var cap = card.querySelector('.cap').textContent;
+        if (card.classList.contains('active')) {
+            slideExpand.hidden = true;
+            card.classList.remove('active');
+            return;
+        }
+        slideExpandImg.src = img.src;
+        slideExpandImg.alt = img.alt;
+        slideExpandCap.textContent = cap;
+        slideExpand.hidden = false;
+        slideCards.forEach(function (c) { c.classList.toggle('active', c === card); });
+        slideExpand.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+});
+document.getElementById('slideExpandClose').addEventListener('click', function (e) {
+    e.stopPropagation();
+    slideExpand.hidden = true;
+    slideCards.forEach(function (c) { c.classList.remove('active'); });
+});
+
+// Active nav highlighting on scroll
+var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-bar a'));
+function onScroll() {
+    var pos = window.scrollY + 80;
+    var current = sections[0];
+    sections.forEach(function (s) { if (s.offsetTop <= pos) current = s; });
+    navLinks.forEach(function (a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current.id);
+    });
+}
+window.addEventListener('scroll', onScroll);
+onScroll();
+</script>
 
 </body>
 </html>
