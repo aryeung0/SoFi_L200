@@ -220,7 +220,7 @@ img, svg { max-width: 100%; height: auto; }
 <div class="section" id="overview">
     <h2>What This Workshop Builds</h2>
     <p>Level 100 showed you what a well-configured AI stack feels like as a <strong>consumer</strong>. Today you become the <strong>builder</strong>: you'll use 9 Cortex AI Functions to turn real, unstructured documents &mdash; an official earnings transcript, a real SEC-filed legal contract, a real earnings call audio clip, and sample invoices &mdash; into structured, governed Snowflake tables.</p>
-    <p>Unlike Level 100, your environment was <strong>pre-built by your facilitator</strong> before the session, since today's data includes binary PDF and audio files that need to already exist in your account. You'll spend the session running AI function SQL directly against real documents &mdash; this session is <strong>interleaved</strong>: a short slide per function, then you try it live, then the next slide. Building a Semantic View and a Cortex Agent over these tables is <strong>Level 300</strong> content, not today.</p>
+    <p>Unlike Level 100, your environment was <strong>pre-built by your facilitator</strong> before the session, since today's data includes binary PDF and audio files that need to already exist in your account. You'll spend the session running AI function SQL directly against real documents &mdash; this session is <strong>interleaved</strong>: a short slide per function, then you try it live, then the next slide.</p>
 
     <div class="metrics-row">
         <div class="metric-card"><div class="metric-label">AI Functions</div><div class="metric-value">9</div><div class="metric-sub">AI_EXTRACT, AI_CLASSIFY, AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT, AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG, AI_COMPLETE</div></div>
@@ -236,7 +236,7 @@ img, svg { max-width: 100%; height: auto; }
 
 <div class="section" id="architecture">
     <h2>Solution Architecture</h2>
-    <p>Your facilitator pre-loaded 6 real documents into an internal stage. Each AI function reads directly from that stage and writes its output into a Snowflake table &mdash; building a Semantic View on top of those tables is Level 300 content, not today.</p>
+    <p>Your facilitator pre-loaded 6 real documents into an internal stage. Each AI function reads directly from that stage and writes its output into a Snowflake table.</p>
 
     <div class="diagram">
         <div class="diagram-row">
@@ -262,7 +262,7 @@ img, svg { max-width: 100%; height: auto; }
             <tr class="sub-row"><td>Schema</td><td><code>DOCUMENTS</code></td><td>Holds the stage and all extraction tables</td></tr>
             <tr class="sub-row"><td>Stage</td><td><code>DOC_AI_SAMPLES</code></td><td>6 real documents: SoFi earnings transcript, Robinhood earnings excerpt, Robinhood earnings call audio, SEC-filed SoFi contract, and 2 vendor invoices</td></tr>
             <tr class="sub-row"><td>Tables</td><td>8</td><td>AI-generated extraction tables you'll build from and query today</td></tr>
-            <tr><td><strong>Workspace</strong></td><td><code>SoFi_L200</code></td><td>Your Snowsight workspace for today</td></tr>
+            <tr><td><strong>Workspace</strong></td><td><code>SoFi_L200</code></td><td>Your Snowsight workspace for today, pre-seeded with 2 SQL files (see below)</td></tr>
         </table>
     </div>
     <div class="note">
@@ -275,7 +275,24 @@ img, svg { max-width: 100%; height: auto; }
         <li>Log in to Snowsight at the URL from your welcome email</li>
         <li>In the left sidebar, click <strong>Projects &rarr; Workspaces</strong>, and open <strong>SoFi_L200</strong></li>
         <li>Click your <strong>user avatar</strong> in the bottom-left corner, and under <strong>Switch Role</strong>, select <strong>FINANCE_HOL_ADMIN</strong></li>
+        <li>In the file list on the left of the workspace, you'll see two pre-seeded files &mdash; open <strong><code>L200_01_Follow_Along.sql</code></strong> and keep it open for the rest of the session:</li>
     </ol>
+    <div class="table-wrap">
+        <table>
+            <tr><th>File</th><th>What it's for</th></tr>
+            <tr><td><strong><code>L200_01_Follow_Along.sql</code></strong></td><td>Your working file. It already has every step below laid out with a comment telling you what to paste and where &mdash; as you go through this guide, copy each "Try it" query into the matching blank.</td></tr>
+            <tr><td><strong><code>L200_02_Answer_Key.sql</code></strong></td><td>Every query already filled in, same order. Fall behind, get stuck, or just want to check your answer &mdash; open this one.</td></tr>
+        </table>
+    </div>
+    <div class="note" style="margin-top:20px;">
+        <strong>Bonus: Upload Your Own Document</strong> &mdash; today, your facilitator pre-loaded everything for you. In the real world, you'll often need to add a new document yourself. Here's the 60-second version:
+        <ol style="margin-top:10px; margin-bottom:0;">
+            <li>Download the practice file: <a href="https://aryeung0.github.io/SoFi_L200/assets/practice_files/L200_Practice_Upload_Sample.pdf">L200_Practice_Upload_Sample.pdf</a></li>
+            <li>In Snowsight, go to <strong>Ingestion &rarr; Add Data &rarr; Load files into a Stage</strong></li>
+            <li>Select the file you just downloaded, choose schema <strong>SOFI_FINANCE_L200.DOCUMENTS</strong> and stage <strong>DOC_AI_SAMPLES</strong>, then select <strong>Upload</strong></li>
+        </ol>
+        <p style="margin-top:10px; margin-bottom:0;">That's it &mdash; we won't run any AI function on this file today, this is just so you've seen the upload mechanic once.</p>
+    </div>
 </div>
 
 <div class="section" id="why">
@@ -287,6 +304,7 @@ img, svg { max-width: 100%; height: auto; }
         <div class="code-label">Try it</div>
         <div class="code-block">SELECT relative_path, size, last_modified
 FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
+        <div class="note" style="margin-top:14px;">Paste this into the <strong>Step 2</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <p style="margin-top:14px;">You should see all 6 files: 2 invoices, 1 contract, 2 earnings transcript PDFs, and 1 audio clip.</p>
     </div>
 </div>
@@ -318,8 +336,10 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
     }
   }
 ) AS extracted;</div>
+        <div class="note" style="margin-top:14px;">Paste both queries above into the <strong>Step 3</strong> blanks in <code>L200_01_Follow_Along.sql</code>.</div>
         <p style="margin-top:14px;">Both invoices were already extracted into <code>documents.invoice_extracts</code> when your account was provisioned:</p>
         <div class="code-block">SELECT * FROM sofi_finance_l200.documents.invoice_extracts;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the last <strong>Step 3</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> This is exactly how Procurement matches PO line items against the 6,162 Coupa/Ironclad approvals over $100K &mdash; one AI_EXTRACT call per invoice instead of manual data entry.</div>
     </div>
 </div>
@@ -337,8 +357,10 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
   ):labels[0]::STRING AS predicted_doc_type
 FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples)
 WHERE relative_path ILIKE '%.pdf';</div>
+        <div class="note" style="margin-top:14px;">Paste this into the <strong>Step 4</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <p style="margin-top:14px;">Compare your live results against the pre-built table:</p>
         <div class="code-block">SELECT * FROM sofi_finance_l200.documents.document_classification;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the second <strong>Step 4</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> An inbound document stage could auto-route every new file to the correct downstream pipeline (AP, Legal, IR) the moment it lands &mdash; no manual triage.</div>
     </div>
 </div>
@@ -352,16 +374,20 @@ WHERE relative_path ILIKE '%.pdf';</div>
   TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'sofi_capped_call_contract.pdf'),
   {'mode': 'OCR'}
 ):content::STRING AS parsed_text;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the first <strong>Step 5</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <p style="margin-top:14px;">This is a <strong>real, SEC-filed legal contract</strong> &mdash; SoFi's Capped Call Early Unwind Agreement, filed as an 8-K exhibit.</p>
+        <div class="note" style="margin-top:14px;">The query above is a one-off SELECT &mdash; it doesn't save anything. The <code>contract_parsed</code> table used in the next two steps was already built for you when your account was provisioned, using this same AI_PARSE_DOCUMENT call. You're not creating that table yourself.</div>
         <div class="code-label">AI_FILTER &mdash; a yes/no question usable in a WHERE clause</div>
         <div class="code-block">SELECT source_file
 FROM sofi_finance_l200.documents.contract_parsed
 WHERE AI_FILTER(
   'Does this legal contract text contain a specific counterparty name or signatory that should be reviewed for confidentiality before external sharing? ' || SUBSTR(parsed_text, 1, 4000)
 );</div>
+        <div class="note" style="margin-top:14px;">Paste this into the second <strong>Step 5</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="code-label">AI_REDACT &mdash; masks sensitive spans using built-in default categories</div>
         <div class="code-block">SELECT AI_REDACT(SUBSTR(parsed_text, 1, 4000)) AS redacted_excerpt
 FROM sofi_finance_l200.documents.contract_parsed;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the third <strong>Step 5</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> Internal Audit runs this exact pattern across every SOX-relevant contract for continuous compliance monitoring &mdash; flag-first, review-second, instead of manual document review.</div>
     </div>
 </div>
@@ -374,12 +400,15 @@ FROM sofi_finance_l200.documents.contract_parsed;</div>
         <div class="code-block">SELECT
   AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):text::STRING AS transcript,
   AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):audio_duration::FLOAT AS duration_seconds;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the first <strong>Step 6</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="code-label">AI_SENTIMENT &mdash; scores text for sentiment</div>
         <div class="code-block">SELECT source_file, overall_sentiment
 FROM sofi_finance_l200.documents.transcript_sentiment;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the second <strong>Step 6</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="code-label">AI_SUMMARIZE_AGG &mdash; an aggregate function rolling many rows into one narrative</div>
         <div class="code-block">SELECT AI_SUMMARIZE_AGG(SUBSTR(transcript_text, 1, 4000)) AS portfolio_summary
 FROM sofi_finance_l200.documents.transcript_sentiment;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the third <strong>Step 6</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> Competitive Strategy tracks sentiment across SoFi's and competitors' earnings calls quarter over quarter, and gets an auto-generated "earnings season" summary for the weekly leadership readout.</div>
     </div>
 </div>
@@ -408,8 +437,10 @@ FROM sofi_finance_l200.documents.transcript_sentiment;</div>
     }
   }
 ) AS audio_analysis;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the first <strong>Step 7</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <p style="margin-top:14px;">Compare against the pre-built table:</p>
         <div class="code-block">SELECT * FROM sofi_finance_l200.documents.audio_complete_analysis;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the second <strong>Step 7</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>When to use it:</strong> custom or open-ended reasoning a fixed extraction schema can't capture, or direct multimodal analysis of audio/video/images without a separate transcription or OCR step. <strong>Use case:</strong> Competitive Strategy gets tone and key topics from a competitor earnings call in a single step &mdash; no separate transcription pipeline required.</div>
     </div>
 </div>
