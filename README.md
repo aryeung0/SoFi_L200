@@ -33,5 +33,6 @@ There's no setup script to run yourself for Level 200 — your facilitator has a
 - `assets/logos/` — SoFi + Snowflake logos (reused from Level 100)
 - `assets/slide_images/` — thumbnails of all 18 slides from the Level 200 deck, used in the guide's Slide Reference gallery
 - `assets/screenshots/` — currently empty (just a `.gitkeep`); Snowsight walkthrough screenshots will be added here later, following Level 100's naming convention (`00_...`, `01_...`, etc.)
-- `assets/practice_files/L200_Practice_Upload_Sample.pdf` — a renamed copy of one of the pre-loaded invoices, used only by the guide's "Bonus: Upload Your Own Document" callout so attendees can practice the Snowsight file-upload flow themselves; not part of the facilitator-provisioned stage content
+- `assets/practice_files/L200_Practice_Upload_Sample.pdf` — a renamed copy of one of the pre-loaded invoices, used by Step 1's "Upload Your Own Document" exercise so attendees can practice the Snowsight file-upload flow themselves; not part of the facilitator-provisioned stage content
+- `assets/documents/` — the 6 real source documents used by the AI functions (2 invoices, 1 SEC-filed contract, 2 earnings-call PDFs, 1 earnings-call audio clip), linked inline in the guide so attendees can view/listen to the source before running each function against it
 

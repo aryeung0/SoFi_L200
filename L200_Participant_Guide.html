@@ -321,6 +321,7 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
         <div class="stop-header"><span class="stop-num">3</span><span class="stop-title">Module 1: AI_EXTRACT</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_EXTRACT</strong> pulls fields out of a document &mdash; either as a simple question/answer map, or a full JSON schema with repeating line items.</p>
         <div class="code-label">Question-map form &mdash; single invoice</div>
+        <p style="margin-top:14px;">View the source document: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/invoice_nexgen_office_solutions.pdf" target="_blank">invoice_nexgen_office_solutions.pdf</a></p>
         <div class="code-block">SELECT AI_EXTRACT(
   file => TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'invoice_nexgen_office_solutions.pdf'),
   responseFormat => {
@@ -330,6 +331,7 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
   }
 ) AS extracted_fields;</div>
         <div class="code-label">Full JSON schema with repeating line items &mdash; second invoice</div>
+        <p style="margin-top:14px;">View the source document: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/invoice_cloudguard_security.pdf" target="_blank">invoice_cloudguard_security.pdf</a></p>
         <div class="code-block">SELECT AI_EXTRACT(
   file => TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'invoice_cloudguard_security.pdf'),
   responseFormat => {
@@ -366,6 +368,7 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
     <div class="stop">
         <div class="stop-header"><span class="stop-num">4</span><span class="stop-title">Module 2: AI_CLASSIFY</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_CLASSIFY</strong> labels a document against categories you define &mdash; no training data or model required.</p>
+        <p style="margin-top:14px;">This step loops over all 6 PDFs in the stage &mdash; the two you haven't seen linked yet: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/sofi_q2_2026_earnings_transcript.pdf" target="_blank">sofi_q2_2026_earnings_transcript.pdf</a> and <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/robinhood_q2_2026_earnings_call_excerpt.pdf" target="_blank">robinhood_q2_2026_earnings_call_excerpt.pdf</a>. The other four are linked in their own steps below.</p>
         <div class="code-label">Try it</div>
         <div class="code-block">SELECT
   relative_path,
@@ -388,6 +391,7 @@ WHERE relative_path ILIKE '%.pdf';</div>
         <div class="stop-header"><span class="stop-num">5</span><span class="stop-title">Module 3: AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_PARSE_DOCUMENT</strong> converts a PDF into clean text &mdash; required before AI_FILTER, AI_REDACT, or AI_SUMMARIZE_AGG, since those only accept text, not files.</p>
         <div class="code-label">Parse the contract</div>
+        <p style="margin-top:14px;">View the source document: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/sofi_capped_call_contract.pdf" target="_blank">sofi_capped_call_contract.pdf</a></p>
         <div class="code-block">SELECT AI_PARSE_DOCUMENT(
   TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'sofi_capped_call_contract.pdf'),
   {'mode': 'OCR'}
@@ -415,6 +419,7 @@ FROM sofi_finance_l200.documents.contract_parsed;</div>
         <div class="stop-header"><span class="stop-num">6</span><span class="stop-title">Module 4: AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_TRANSCRIBE</strong> converts audio directly into text &mdash; no separate transcription service.</p>
         <div class="code-label">Try it &mdash; a real 6-minute clip from Robinhood's Q2 2026 earnings call</div>
+        <p style="margin-top:14px;">Listen to the source audio: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/robinhood_q2_2026_earnings_call_clip.mp3" target="_blank">robinhood_q2_2026_earnings_call_clip.mp3</a></p>
         <div class="code-block">SELECT
   AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):text::STRING AS transcript,
   AI_TRANSCRIBE(TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'robinhood_q2_2026_earnings_call_clip.mp3')):audio_duration::FLOAT AS duration_seconds;</div>
@@ -436,6 +441,7 @@ FROM sofi_finance_l200.documents.transcript_sentiment;</div>
         <div class="stop-header"><span class="stop-num">7</span><span class="stop-title">Capstone: AI_COMPLETE</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p>Here's the reveal: this is the <strong>same audio file</strong> you just transcribed, sentiment-scored, and summarized in the previous step &mdash; but now <strong>AI_COMPLETE</strong> reasons directly over the raw audio, in one call, with zero transcription step.</p>
         <p>Where AI_EXTRACT, AI_CLASSIFY, and AI_TRANSCRIBE are each purpose-built for one task, <strong>AI_COMPLETE</strong> is the flexible, general-purpose function in the Cortex AI family &mdash; it takes a model, a custom prompt, an optional file (audio/image/video), and a structured JSON schema.</p>
+        <p style="margin-top:14px;">Same source audio as the previous step: <a href="https://aryeung0.github.io/SoFi_L200/assets/documents/robinhood_q2_2026_earnings_call_clip.mp3" target="_blank">robinhood_q2_2026_earnings_call_clip.mp3</a></p>
         <div class="code-label">Try it</div>
         <div class="code-block">SELECT AI_COMPLETE(
   'gemini-3.1-pro',
