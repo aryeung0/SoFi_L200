@@ -360,6 +360,19 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
         <p style="margin-top:14px;">Both invoices &mdash; including line items &mdash; were already extracted into <code>documents.invoice_extracts</code> when your account was provisioned, using this exact same schema:</p>
         <div class="code-block">SELECT * FROM sofi_finance_l200.documents.invoice_extracts;</div>
         <div class="note" style="margin-top:14px;">Paste this into the last <strong>Step 3</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
+        <p style="margin-top:14px;"><code>line_items</code> comes back as parallel arrays &mdash; <code>description[]</code>, <code>quantity[]</code>, and <code>amount[]</code>, all indexed the same way &mdash; rather than a table. Use <strong>LATERAL FLATTEN</strong> to zip them back into one normal row per line item:</p>
+        <div class="code-label">Make it human-readable</div>
+        <div class="code-block">SELECT
+  source_file,
+  vendor_name,
+  invoice_number,
+  li.index + 1 AS line_number,
+  line_items:description[li.index]::STRING AS description,
+  line_items:quantity[li.index]::STRING AS quantity,
+  line_items:amount[li.index]::STRING AS amount
+FROM sofi_finance_l200.documents.invoice_extracts,
+LATERAL FLATTEN(input => line_items:description) li;</div>
+        <div class="note" style="margin-top:14px;">Paste this into the new <strong>Step 3</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> This is exactly how Procurement matches PO line items against the 6,162 Coupa/Ironclad approvals over $100K &mdash; one AI_EXTRACT call per invoice instead of manual data entry.</div>
     </div>
 </div>
