@@ -14,12 +14,13 @@
     { "id": "overview", "title": "What This Workshop Builds" },
     { "id": "architecture", "title": "Solution Architecture" },
     { "id": "objects", "title": "What's Already In Your Account" },
-    { "id": "why", "title": "Step 1 — Why AI Functions" },
-    { "id": "extract", "title": "Step 2 — AI_EXTRACT" },
-    { "id": "classify", "title": "Step 3 — AI_CLASSIFY" },
-    { "id": "compliance", "title": "Step 4 — AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT" },
-    { "id": "transcribe", "title": "Step 5 — AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG" },
-    { "id": "complete", "title": "Step 6 — Capstone: AI_COMPLETE" },
+    { "id": "upload", "title": "Step 1 — Upload Your Own Document" },
+    { "id": "why", "title": "Step 2 — Why AI Functions" },
+    { "id": "extract", "title": "Step 3 — AI_EXTRACT" },
+    { "id": "classify", "title": "Step 4 — AI_CLASSIFY" },
+    { "id": "compliance", "title": "Step 5 — AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT" },
+    { "id": "transcribe", "title": "Step 6 — AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG" },
+    { "id": "complete", "title": "Step 7 — Capstone: AI_COMPLETE" },
     { "id": "next-steps", "title": "Recap & What's Next" }
   ]
 }
@@ -284,20 +285,24 @@ img, svg { max-width: 100%; height: auto; }
             <tr><td><strong><code>L200_02_Answer_Key.sql</code></strong></td><td>Every query already filled in, same order. Fall behind, get stuck, or just want to check your answer &mdash; open this one.</td></tr>
         </table>
     </div>
-    <div class="note" style="margin-top:20px;">
-        <strong>Bonus: Upload Your Own Document</strong> &mdash; today, your facilitator pre-loaded everything for you. In the real world, you'll often need to add a new document yourself. Here's the 60-second version:
-        <ol style="margin-top:10px; margin-bottom:0;">
-            <li>Download the practice file: <a href="https://aryeung0.github.io/SoFi_L200/assets/practice_files/L200_Practice_Upload_Sample.pdf">L200_Practice_Upload_Sample.pdf</a></li>
+</div>
+
+<div class="section" id="upload">
+    <div class="stop">
+        <div class="stop-header"><span class="stop-num">1</span><span class="stop-title">Upload Your Own Document</span><span class="stop-tag tag-setup">Context</span></div>
+        <p>Today, your facilitator pre-loaded everything for you. In the real world, you'll often need to add a new document yourself &mdash; here's the 60-second version.</p>
+        <ol>
+            <li>Download the practice file: <a href="https://aryeung0.github.io/SoFi_L200/assets/practice_files/L200_Practice_Upload_Sample.pdf" download="L200_Practice_Upload_Sample.pdf">L200_Practice_Upload_Sample.pdf</a></li>
             <li>In Snowsight, go to <strong>Ingestion &rarr; Add Data &rarr; Load files into a Stage</strong></li>
             <li>Select the file you just downloaded, choose schema <strong>SOFI_FINANCE_L200.DOCUMENTS</strong> and stage <strong>DOC_AI_SAMPLES</strong>, then select <strong>Upload</strong></li>
         </ol>
-        <p style="margin-top:10px; margin-bottom:0;">That's it &mdash; we won't run any AI function on this file today, this is just so you've seen the upload mechanic once.</p>
+        <p style="margin-top:14px;">That's it &mdash; we won't run any AI function on this file today, this is just so you've seen the upload mechanic once.</p>
     </div>
 </div>
 
 <div class="section" id="why">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">1</span><span class="stop-title">Why AI Functions</span><span class="stop-tag tag-setup">Context</span></div>
+        <div class="stop-header"><span class="stop-num">2</span><span class="stop-title">Why AI Functions</span><span class="stop-tag tag-setup">Context</span></div>
         <p>Level 100 showed CoCo and CoWork answering questions over <strong>structured</strong> tables, grounded by a Semantic View and a <strong>Cortex Agent</strong>. Today's data &mdash; invoices, transcripts, a contract, an audio file &mdash; isn't structured at all. Cortex AI Functions run directly inside Snowflake on files sitting in a stage, so you can turn any document or recording into a queryable table without a separate ML pipeline or sending data outside your account.</p>
         <p>This session is <strong>interleaved</strong>: a short slide explaining each function, then you try it live, then the next slide &mdash; nine functions total.</p>
         <p>Take a look at the stage before you start:</p>
@@ -311,7 +316,7 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
 
 <div class="section" id="extract">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">2</span><span class="stop-title">Module 1: AI_EXTRACT</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <div class="stop-header"><span class="stop-num">3</span><span class="stop-title">Module 1: AI_EXTRACT</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_EXTRACT</strong> pulls fields out of a document &mdash; either as a simple question/answer map, or a full JSON schema with repeating line items.</p>
         <div class="code-label">Question-map form &mdash; single invoice</div>
         <div class="code-block">SELECT AI_EXTRACT(
@@ -346,7 +351,7 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
 
 <div class="section" id="classify">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">3</span><span class="stop-title">Module 2: AI_CLASSIFY</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <div class="stop-header"><span class="stop-num">4</span><span class="stop-title">Module 2: AI_CLASSIFY</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_CLASSIFY</strong> labels a document against categories you define &mdash; no training data or model required.</p>
         <div class="code-label">Try it</div>
         <div class="code-block">SELECT
@@ -367,7 +372,7 @@ WHERE relative_path ILIKE '%.pdf';</div>
 
 <div class="section" id="compliance">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">4</span><span class="stop-title">Module 3: AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <div class="stop-header"><span class="stop-num">5</span><span class="stop-title">Module 3: AI_PARSE_DOCUMENT, AI_FILTER, AI_REDACT</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_PARSE_DOCUMENT</strong> converts a PDF into clean text &mdash; required before AI_FILTER, AI_REDACT, or AI_SUMMARIZE_AGG, since those only accept text, not files.</p>
         <div class="code-label">Parse the contract</div>
         <div class="code-block">SELECT AI_PARSE_DOCUMENT(
@@ -394,7 +399,7 @@ FROM sofi_finance_l200.documents.contract_parsed;</div>
 
 <div class="section" id="transcribe">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">5</span><span class="stop-title">Module 4: AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <div class="stop-header"><span class="stop-num">6</span><span class="stop-title">Module 4: AI_TRANSCRIBE, AI_SENTIMENT, AI_SUMMARIZE_AGG</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p><strong>AI_TRANSCRIBE</strong> converts audio directly into text &mdash; no separate transcription service.</p>
         <div class="code-label">Try it &mdash; a real 6-minute clip from Robinhood's Q2 2026 earnings call</div>
         <div class="code-block">SELECT
@@ -415,7 +420,7 @@ FROM sofi_finance_l200.documents.transcript_sentiment;</div>
 
 <div class="section" id="complete">
     <div class="stop">
-        <div class="stop-header"><span class="stop-num">6</span><span class="stop-title">Capstone: AI_COMPLETE</span><span class="stop-tag tag-ai">AI Function</span></div>
+        <div class="stop-header"><span class="stop-num">7</span><span class="stop-title">Capstone: AI_COMPLETE</span><span class="stop-tag tag-ai">AI Function</span></div>
         <p>Here's the reveal: this is the <strong>same audio file</strong> you just transcribed, sentiment-scored, and summarized in the previous step &mdash; but now <strong>AI_COMPLETE</strong> reasons directly over the raw audio, in one call, with zero transcription step.</p>
         <p>Where AI_EXTRACT, AI_CLASSIFY, and AI_TRANSCRIBE are each purpose-built for one task, <strong>AI_COMPLETE</strong> is the flexible, general-purpose function in the Cortex AI family &mdash; it takes a model, a custom prompt, an optional file (audio/image/video), and a structured JSON schema.</p>
         <div class="code-label">Try it</div>
