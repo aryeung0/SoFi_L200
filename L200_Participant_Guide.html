@@ -333,18 +333,29 @@ FROM DIRECTORY(@sofi_finance_l200.documents.doc_ai_samples);</div>
         <div class="code-block">SELECT AI_EXTRACT(
   file => TO_FILE('@sofi_finance_l200.documents.doc_ai_samples', 'invoice_cloudguard_security.pdf'),
   responseFormat => {
-    'type': 'json',
     'schema': {
-      'vendor_name': 'STRING',
-      'invoice_number': 'STRING',
-      'invoice_date': 'STRING',
-      'total_amount': 'STRING',
-      'line_items': [{'description': 'STRING', 'quantity': 'STRING', 'amount': 'STRING'}]
+      'type': 'object',
+      'properties': {
+        'vendor_name': {'type': 'string'},
+        'invoice_number': {'type': 'string'},
+        'invoice_date': {'type': 'string'},
+        'total_amount': {'type': 'string'},
+        'line_items': {
+          'description': 'Line items table with description, quantity, and amount columns',
+          'type': 'object',
+          'column_ordering': ['description', 'quantity', 'amount'],
+          'properties': {
+            'description': {'description': 'Item description', 'type': 'array'},
+            'quantity': {'description': 'Quantity', 'type': 'array'},
+            'amount': {'description': 'Amount', 'type': 'array'}
+          }
+        }
+      }
     }
   }
 ) AS extracted;</div>
         <div class="note" style="margin-top:14px;">Paste both queries above into the <strong>Step 3</strong> blanks in <code>L200_01_Follow_Along.sql</code>.</div>
-        <p style="margin-top:14px;">Both invoices were already extracted into <code>documents.invoice_extracts</code> when your account was provisioned:</p>
+        <p style="margin-top:14px;">Both invoices &mdash; including line items &mdash; were already extracted into <code>documents.invoice_extracts</code> when your account was provisioned, using this exact same schema:</p>
         <div class="code-block">SELECT * FROM sofi_finance_l200.documents.invoice_extracts;</div>
         <div class="note" style="margin-top:14px;">Paste this into the last <strong>Step 3</strong> blank in <code>L200_01_Follow_Along.sql</code>.</div>
         <div class="note-green" style="margin-top:14px;"><strong>Use case:</strong> This is exactly how Procurement matches PO line items against the 6,162 Coupa/Ironclad approvals over $100K &mdash; one AI_EXTRACT call per invoice instead of manual data entry.</div>
